@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>50代女性トークガイド｜理解度確認テスト</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    /* Progress */
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-bg {
+      flex: 1;
+      height: 4px;
+      background: #e8e6e0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 4px;
+      background: #7F77DD;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: #aaa;
+      white-space: nowrap;
+    }
+
+    /* Question */
+    .q-num {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #7F77DD;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .q-text {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.65;
+      color: #1a1a1a;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Options */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .opt-btn {
+      background: #fafaf8;
+      border: 1.5px solid #e8e6e0;
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 14px;
+      color: #1a1a1a;
+      text-align: left;
+      cursor: pointer;
+      line-height: 1.55;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      font-family: inherit;
+    }
+
+    .opt-btn:hover:not(:disabled) {
+      background: #f0effe;
+      border-color: #AFA9EC;
+      transform: translateY(-1px);
+    }
+
+    .opt-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .opt-btn.correct {
+      background: #eaf3de;
+      border-color: #639922;
+      color: #27500A;
+    }
+
+    .opt-btn.wrong {
+      background: #fcebeb;
+      border-color: #A32D2D;
+      color: #501313;
+    }
+
+    .opt-btn:disabled { cursor: default; }
+
+    /* Feedback */
+    .feedback {
+      margin-top: 1rem;
+      padding: 13px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.65;
+      display: none;
+    }
+
+    .feedback.show { display: block; }
+
+    .feedback.correct {
+      background: #eaf3de;
+      color: #27500A;
+      border: 1px solid #c0dd97;
+    }
+
+    .feedback.wrong {
+      background: #fcebeb;
+      color: #501313;
+      border: 1px solid #f09595;
+    }
+
+    /* Next button */
+    .next-btn {
+      margin-top: 1.25rem;
+      padding: 11px 28px;
+      border-radius: 10px;
+      border: 1.5px solid #7F77DD;
+      background: transparent;
+      color: #534AB7;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: none;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+
+    .next-btn.show { display: inline-block; }
+    .next-btn:hover { background: #f0effe; }
+
+    /* Result */
+    .result-wrap { text-align: center; }
+
+    .result-score {
+      font-size: 56px;
+      font-weight: 700;
+      color: #534AB7;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .result-denom {
+      font-size: 20px;
+      color: #999;
+    }
+
+    .result-pct {
+      font-size: 15px;
+      color: #888;
+      margin: 8px 0 1.5rem;
+    }
+
+    .result-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+
+    .badge-s { background: #EEEDFE; color: #534AB7; }
+    .badge-a { background: #eaf3de; color: #3B6D11; }
+    .badge-b { background: #FAEEDA; color: #854F0B; }
+    .badge-c { background: #fcebeb; color: #993556; }
+
+    .result-comment {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.75;
+      text-align: left;
+      background: #f5f4f0;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .retry-btn {
+      padding: 11px 32px;
+      border-radius: 10px;
+      border: 1.5px solid #7F77DD;
+      background: transparent;
+      color: #534AB7;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+
+    .retry-btn:hover { background: #f0effe; }
+
+    @media (max-width: 480px) {
+      .card { padding: 1.5rem 1.25rem; }
+      .q-text { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>50代女性トークガイド</h1>
+    <p>理解度確認テスト（全10問）</p>
+  </div>
+  <div class="card" id="card">
+    <div class="progress-row">
+      <div class="progress-bg"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+      <span class="progress-text" id="progress-text">0 / 10</span>
+    </div>
+    <div id="quiz-body"></div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "50代女性が長年積み重ねてきた「役割」として、当てはまらないものはどれか？",
+    opts: ["母親として子育てをする", "職場で後進を指導する立場になる", "自分の趣味を優先した生活を送る", "親の介護をする"],
+    ans: 2,
+    fb: "50代女性は「母親」「職場での世話役」「親の介護」など、誰かのためになる役割が重なりやすい時期です。だからこそ、役割から離れた「自分自身として見てもらえる時間」を渇望しています。"
+  },
+  {
+    q: "50代女性が「評価される」ことに警戒心を持つ背景として、正しいものはどれか？",
+    opts: ["職場・子育て・容姿など、様々な面で長年評価にさらされてきたから", "若い頃から評価されることが嫌いな性格だから", "褒め言葉を受け取る語彙力が不足しているから", "評価されると恥ずかしくなる性質があるから"],
+    ans: 0,
+    fb: "この年代の女性は、多方面で評価にさらされてきた経験から、褒め言葉であっても評価的なニュアンスを感じると身構えてしまう傾向があります。"
+  },
+  {
+    q: "50代女性の「楽しさへの飢え」とは、どのような状態を指すか？",
+    opts: ["旅行や外食など金銭的な楽しみへの欲求が高まっている状態", "役割や責任に追われてきた結果、目的を持たない純粋に楽しい時間への憧れが強い状態", "若い頃の楽しかった記憶を再体験したい気持ちが強い状態", "友人との競争心から楽しいことを探している状態"],
+    ans: 1,
+    fb: "長年「誰かのために」を優先してきた結果、目的や生産性を求めない純粋な楽しさを提供できる相手が、特別な価値を持つようになります。"
+  },
+  {
+    q: "「評価語」と「共感語」の違いとして正しいものはどれか？",
+    opts: ["評価語は相手を上から見るニュアンスを含み、共感語は横並びで受け止めるニュアンスになる", "評価語は丁寧な表現で、共感語はカジュアルな表現のこと", "評価語は事実に基づき、共感語は感情に基づく表現のこと", "評価語は年下に使い、共感語は年上に使うべき表現のこと"],
+    ans: 0,
+    fb: "「すごいですね」より「大変じゃなかったですか？」の方が、対等な関係性を感じさせます。評価語は「上から」、共感語は「横並び」のニュアンスです。"
+  },
+  {
+    q: "次のうち、「広げる質問」として正しいものはどれか？",
+    opts: ["「お子さんはもう独立されたんですか？」", "「お仕事は何をされてるんですか？」", "「お子さんが独立されてから、生活って変わりましたか？」", "「最近、体調はよいですか？」"],
+    ans: 2,
+    fb: "はい/いいえで終わらず、相手が自由に話を広げられる余白を与える質問がポイントです。「〜って変わりましたか？」という形は、相手に「何でも話していい」という安心感を与えます。"
+  },
+  {
+    q: "自己開示をする際に効果的なのはどれか？",
+    opts: ["自分の成功体験や実績を積極的に話す", "相手に共感してもらいやすい弱さや悩みを含める", "相手の話題に合わせて作り話をする", "できるだけ自分のことは話さないようにする"],
+    ans: 1,
+    fb: "「体力の落ち方に焦っている」など、人間味のある自己開示をすることで「この人も完璧じゃない」「対等に話せる」という安心感が生まれます。"
+  },
+  {
+    q: "相手が「もう年だから、すぐ疲れちゃって」と言ったとき、最も適切な返し方はどれか？",
+    opts: ["「そんなことないですよ！まだまだお若いです！」", "「それは健康に気をつけないといけないですね」", "「わかります。でも逆に、無理しなくなった分、毎日が楽になりません？」", "「年齢を気にしすぎるのはよくないですよ」"],
+    ans: 2,
+    fb: "過度なポジティブや安易な同情は逆効果。「確かにそうだね、でも見方を変えると…」というフラットに受け止めて軽く笑いに変えるアプローチが自然な共感につながります。"
+  },
+  {
+    q: "初対面の場面で避けた方がよい質問はどれか？",
+    opts: ["「今日はどんな感じでこちらにいらっしゃったんですか？」", "「最近、何か楽しいことはありましたか？」", "「お仕事は何をされてるんですか？」", "「このあたりはよくいらっしゃるんですか？」"],
+    ans: 2,
+    fb: "いきなり職業を聞くと、評価につながりやすく、相手が身構えてしまいます。「今この場にいる経緯」を聞くような質問の方が、評価から距離を置いた自然な会話の始まりになります。"
+  },
+  {
+    q: "会話中に沈黙が生じたとき、最も適切な対応はどれか？",
+    opts: ["すぐに新しい話題を探して、沈黙を埋める", "「何か話さないといけませんね」と率直に伝える", "沈黙を共有体験として「特に何も話さなくてもいい時間っていいですね」と言葉にする", "相手に「どうしたんですか？」と心配そうに確認する"],
+    ans: 2,
+    fb: "沈黙を焦って埋めるより、「この人とは無理して話さなくていい」という安心感を与えることが、関係の質を深めます。沈黙をポジティブな共有体験として扱うのがポイントです。"
+  },
+  {
+    q: "「深掘り質問」のトレーニングとして、日常的に意識すべき問いかけはどれか？",
+    opts: ["「それは正しいんですか？」「本当ですか？」「根拠はありますか？」", "「それでどうなったんですか？」「その時どう感じました？」「今もそう思いますか？」", "「もっと詳しく教えてもらえますか？」「他には？」「なぜですか？」", "「大変でしたね」「わかります」「そうなんですね」"],
+    ans: 1,
+    fb: "「それでどうなったんですか？」「その時どう感じました？」「今もそう思いますか？」の3つを口癖にするだけで、相手が「ちゃんと聞いてもらえている」と感じやすくなります。"
+  }
+];
+
+let current = 0, score = 0, answered = false;
+
+function render() {
+  const pct = (current / questions.length) * 100;
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = current + ' / ' + questions.length;
+
+  const body = document.getElementById('quiz-body');
+
+  if (current >= questions.length) {
+    showResult(body); return;
+  }
+
+  const q = questions[current];
+  body.innerHTML =
+    '<p class="q-num">Question ' + (current + 1) + '</p>' +
+    '<p class="q-text">' + q.q + '</p>' +
+    '<div class="options">' +
+      q.opts.map((o, i) => '<button class="opt-btn" data-i="' + i + '" onclick="choose(' + i + ')">' + o + '</button>').join('') +
+    '</div>' +
+    '<div class="feedback" id="fb"></div>' +
+    '<button class="next-btn" id="next-btn" onclick="next()">' + (current + 1 < questions.length ? '次の問題へ →' : '結果を見る →') + '</button>';
+
+  answered = false;
+}
+
+function choose(i) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const btns = document.querySelectorAll('.opt-btn');
+  const fb = document.getElementById('fb');
+
+  btns.forEach(b => b.disabled = true);
+  btns[q.ans].classList.add('correct');
+
+  if (i === q.ans) {
+    score++;
+    fb.className = 'feedback correct show';
+    fb.innerHTML = '✓ 正解！ ' + q.fb;
+  } else {
+    btns[i].classList.add('wrong');
+    fb.className = 'feedback wrong show';
+    fb.innerHTML = '✗ 不正解。 ' + q.fb;
+  }
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function next() { current++; render(); }
+
+function showResult(body) {
+  document.getElementById('progress').style.width = '100%';
+  document.getElementById('progress-text').textContent = '10 / 10';
+
+  const pct = Math.round((score / questions.length) * 100);
+  let badge, badgeClass, comment;
+
+  if (pct >= 90) {
+    badge = 'S ランク'; badgeClass = 'badge-s';
+    comment = '素晴らしい理解度です！ガイドの内容がしっかり身についています。あとは実際の会話で意識して使ってみましょう。';
+  } else if (pct >= 70) {
+    badge = 'A ランク'; badgeClass = 'badge-a';
+    comment = 'よく理解できています。間違えた問題の解説を読み返して、苦手な部分を補強しましょう。';
+  } else if (pct >= 50) {
+    badge = 'B ランク'; badgeClass = 'badge-b';
+    comment = 'まだ定着しきれていない部分があります。ガイドの第1部・第2部を中心に読み直すことをおすすめします。';
+  } else {
+    badge = 'C ランク'; badgeClass = 'badge-c';
+    comment = 'ガイドをもう一度最初から読み返してみましょう。特に「評価語と共感語の違い」と「広げる質問」の部分が重要です。';
+  }
+
+  body.innerHTML =
+    '<div class="result-wrap">' +
+    '<div class="result-score">' + score + '<span class="result-denom"> / 10</span></div>' +
+    '<div class="result-pct">正解率 ' + pct + '%</div>' +
+    '<span class="result-badge ' + badgeClass + '">' + badge + '</span>' +
+    '<div class="result-comment">' + comment + '</div>' +
+    '<button class="retry-btn" onclick="restart()">もう一度挑戦する</button>' +
+    '</div>';
+}
+
+function restart() { current = 0; score = 0; answered = false; render(); }
+
+render();
+</script>
+</body>
+</html>
